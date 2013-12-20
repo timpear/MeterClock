@@ -3,6 +3,8 @@
 // for 60 pixel strip and Teensy 3.0
 // v1 sets with encoder, keeps time with delay()
 
+// NOTE: this doesn't accurately keep time
+
 #include <Adafruit_NeoPixel.h>
 #include <Encoder.h>
 #define PIN 3
@@ -94,6 +96,11 @@ void loop() {
       for (int clr = 0; clr < 60; clr++) {
         strip.setPixelColor(clr, 0, 0, 0);
       }
+      strip.setPixelColor(0, 20, 0, 0);
+      strip.setPixelColor(15, 20, 0, 0);
+      strip.setPixelColor(30, 20, 0, 0);
+      strip.setPixelColor(45, 20, 0, 0);
+      
       strip.setPixelColor(hD, 255, 100, 0);
       strip.setPixelColor(mOrigin, 255, 255, 0);
       strip.show();     
@@ -101,6 +108,10 @@ void loop() {
   }
   else{      
 //CLOCK RUN
+
+    for (int clr = 0; clr < 60; clr++) {
+      strip.setPixelColor(clr, 0, 0, 0);
+    }
       
     for (int h = hOrigin; h < 12; h++) {
           
@@ -133,7 +144,11 @@ void loop() {
           hOrigin = 0;
                   
           strip.setPixelColor(sMin, 0, 0, 0);
-                     
+//          strip.setPixelColor(0, 0, 0, 20);
+//          strip.setPixelColor(15, 0, 0, 20);
+//          strip.setPixelColor(30, 0, 0, 20);
+//          strip.setPixelColor(45, 0, 0, 20);
+          
           strip.setPixelColor(hD, hR, hG, hB);
           strip.setPixelColor(m, mR, mG, mB);
           strip.setPixelColor(s, sR, sG, sB);
