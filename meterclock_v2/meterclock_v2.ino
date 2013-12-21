@@ -11,7 +11,7 @@
 int clockMode = 1;
 // faceMode sets dial reference points:
 // 0=off, 1=every 15 minutes, 2=every 5 minutes
-int faceMode = 0;
+int faceMode = 2;
 // hourChime adds blinky animation on the new hour, when true
 boolean hourChime = true;
 
@@ -103,6 +103,7 @@ void eraseHour(int h) {
   
   if (twelveHour != lastTH && hourChime == false) {
     strip.setPixelColor(hPrev, 0, 0, 0);
+    lastTH = twelveHour;
     hPrev = h;
   }
   else if (twelveHour != lastTH && hourChime == true) {
@@ -124,6 +125,7 @@ void eraseHour(int h) {
       }   
     }
     strip.setPixelColor(hPrev, 0, 0, 0);
+    lastTH = twelveHour;
     hPrev = h;
   }
   else {
