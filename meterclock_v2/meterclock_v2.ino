@@ -6,22 +6,23 @@
 #include <Adafruit_NeoPixel.h>
 #define PIN 20
 
-int sPrev; // previously displayed second, for clearing pixel
+// clockMode sets color scheme:
+// 0=GRAY, 1=BLUES, 2=ORANGES, 3=GREENS, 4=CHRISTMAS
+int clockMode = 1;
+
+int sPrev;
 int mPrev;
 int hPrev;
-int hD; // hour number to display on a scale of 0-59
-
-const int sR = 100;
-const int sG = 100;
-const int sB = 100;
-
-const int mR = 25;
-const int mG = 255;
-const int mB = 255;
-
-const int hR = 25;
-const int hG = 25;
-const int hB = 255;
+int hD;
+int sR;
+int sG;
+int sB;
+int mR;
+int mG;
+int mB;
+int hR;
+int hG;
+int hB;
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -34,17 +35,16 @@ void setup() {
 }
 
 void loop() { 
-  previousSecond(second());
-  previousMinute(minute());
+  // put input here to set clockMode
+  
+  colorSelect(clockMode);
+  eraseSecond(second());
+  eraseMinute(minute());
   hourFormat(hour());
-  previousHour(hD);
-
-  strip.setPixelColor(hD, hR, hG, hB);
-  strip.setPixelColor(minute(), mR, mG, mB);
-  strip.setPixelColor(second(), sR, sG, sB);
-       
+  eraseHour(hD);
+  setClock();
   strip.show();
-  delay(500);
+  delay(100);
 }
 
 time_t getTeensy3Time()
@@ -60,27 +60,113 @@ void hourFormat(int h) {
   } 
 }
 
-void previousSecond(int s) {
+void eraseSecond(int s) {
   if (s == 0) {
     sPrev = 59; 
-  } else {
+  } 
+  else {
     sPrev = s - 1;
   }  
   strip.setPixelColor(sPrev, 0, 0, 0);
 }
 
-void previousMinute(int m) {
-  if (m == mPrev) {
-  } else {
+void eraseMinute(int m) {
+  if (m != mPrev) {
     strip.setPixelColor(mPrev, 0, 0, 0);
     mPrev = m;
+  } 
+}
+
+void eraseHour(int h) {
+  if (h != hPrev) {
+    strip.setPixelColor(hPrev, 0, 0, 0);
+    hPrev = h;
+  } 
+}
+
+void setClock() {
+  if (minute() == hD && second() == hD) {
+    strip.setPixelColor(second(), 255, 255, 255);
+  }
+  else if (minute() == hD && second() != hD) {
+    strip.setPixelColor(minute(), ((hR+mR)/2), ((hG+mG)/2), ((hB+mB)/2));
+    strip.setPixelColor(second(), sR, sG, sB);
+  }
+  else if (second() == minute() && hD != minute()) {
+    strip.setPixelColor(second(), ((sR+mR)/2), ((sG+mG)/2), ((sB+mB)/2));
+    strip.setPixelColor(hD, hR, hG, hB);
+  }
+  else if (second() == hD && minute() != hD) {
+    strip.setPixelColor(second(), ((sR+hR)/2), ((sG+hG)/2), ((sB+hB)/2));
+    strip.setPixelColor(minute(), mR, mG, mB);
+  }
+  else {
+    strip.setPixelColor(hD, hR, hG, hB);
+    strip.setPixelColor(minute(), mR, mG, mB);
+    strip.setPixelColor(second(), sR, sG, sB);
   }
 }
 
-void previousHour(int h) {
-  if (h == hPrev) {
-  } else {
-    strip.setPixelColor(hPrev, 0, 0, 0);
-    hPrev = h;
+void colorSelect(int mode) {
+  switch(mode){
+    case 0: //GRAY
+      sR = 100;
+      sG = 100;
+      sB = 100;
+      mR = 50;
+      mG = 50;
+      mB = 50;
+      hR = 25;
+      hG = 25;
+      hB = 25;
+      break;
+      
+    case 1: //BLUES
+      sR = 100;
+      sG = 100;
+      sB = 100;
+      mR = 25;
+      mG = 255;
+      mB = 255;
+      hR = 25;
+      hG = 25;
+      hB = 255;
+      break;
+      
+    case 2: //ORANGES
+      sR = 100;
+      sG = 100;
+      sB = 100;
+      mR = 255;
+      mG = 255;
+      mB = 0;
+      hR = 255;
+      hG = 100;
+      hB = 0;
+      break;
+    
+    case 3: //GREENS
+      sR = 100;
+      sG = 100;
+      sB = 100;
+      mR = 100;
+      mG = 255;
+      mB = 100;
+      hR = 25;
+      hG = 255;
+      hB = 25;
+      break;
+      
+    case 4: //CHRISTMAS
+      sR = 100;
+      sG = 100;
+      sB = 100;
+      mR = 255;
+      mG = 0;
+      mB = 0;
+      hR = 0;
+      hG = 255;
+      hB = 0;
+      break;      
   }
 }
