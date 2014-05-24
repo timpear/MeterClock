@@ -2,6 +2,15 @@
 // by Tim Bartlett
 // for 60 pixel strip and Teensy 3.0 with crystal
 
+/* 
+
+IMPORTANT!!!!
+I have not tested this version - please let me know if it works.
+It erases the entire strip every cycle to reduce lines of code.
+
+*/
+
+
 #include <Time.h>
 #include <Adafruit_NeoPixel.h>
 #define PIN 20
@@ -48,14 +57,9 @@ void loop() {
   // put input here to set clockMode 
   // put input here to select faceMode
  
-  eraseSecond(second());
-  eraseMinute(minute());
   hourFormat(hour());
-  eraseHour(hD);
-  setFace(faceMode);
-  setClock();
-  strip.show();
-  delay(5);
+  alarm(hD);
+  eraseClock();
   setFace(faceMode);
   setClock();
   strip.show();
@@ -82,41 +86,15 @@ void hourFormat(int h) {
   } 
 }
 
-void eraseSecond(int s) {
-  if (s == 0) {
-    sPrev = 59; 
-  } 
-  else {
-    sPrev = s - 1;
-  }  
-  strip.setPixelColor(sPrev, 0, 0, 0);
-  strip.show();
-  strip.setPixelColor(sPrev, 0, 0, 0); //redundancy to make sure it erases
-  strip.show();
+void eraseClock(){
+  for (int p = 0; p < 60; p++) {
+    strip.setPixelColor(p, 0, 0, 0);
+    strip.show();
+  }
 }
 
-void eraseMinute(int m) {
-  if (m != mPrev) {
-    strip.setPixelColor(mPrev, 0, 0, 0);
-    strip.show();
-    strip.setPixelColor(mPrev, 0, 0, 0);
-    strip.show();
-    mPrev = m;
-  } 
-}
-
-void eraseHour(int h) {
-  if (h != hPrev) {
-    strip.setPixelColor(hPrev, 0, 0, 0);
-    hPrev = h;
-  }
-  
-  if (twelveHour != lastTH && hourChime == false) {
-    strip.setPixelColor(hPrev, 0, 0, 0);
-    lastTH = twelveHour;
-    hPrev = h;
-  }
-  else if (twelveHour != lastTH && hourChime == true) {
+void alarm(int h) {
+  if (twelveHour != lastTH && hourChime == true) {
     for (int i = 0; i < twelveHour; i++) {
       for (int p = 0; p < 60; p++) {
         if (p <= h) {
@@ -133,12 +111,7 @@ void eraseHour(int h) {
         strip.show();
         delay(17);
       }
-      for (int p = 0; p < 60; p++) {
-        strip.setPixelColor(p, 0, 0, 0);
-        strip.show();
-      } //redundancy to make sure it clears
     }
-    strip.setPixelColor(hPrev, 0, 0, 0);
     lastTH = twelveHour;
     hPrev = h;
   }
