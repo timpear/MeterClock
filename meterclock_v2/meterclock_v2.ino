@@ -48,8 +48,8 @@ void loop() {
   // put input here to set clockMode 
   // put input here to select faceMode
  
-  eraseSecond(second());
-  eraseMinute(minute());
+  eraseSecond();
+  eraseMinute(minute()); //this may not be necessary with the new eraseSecond function
   hourFormat(hour());
   eraseHour(hD);
   setFace(faceMode);
@@ -78,14 +78,10 @@ void hourFormat(int h) {
   } 
 }
 
-void eraseSecond(int s) {
-  if (s == 0) {
-    sPrev = 59; 
+void eraseSecond() {
+  for (int i = 0; i < 60; i++) {
+    strip.setPixelColor(i, 0, 0, 0);
   } 
-  else {
-    sPrev = s - 1;
-  }  
-  strip.setPixelColor(sPrev, 0, 0, 0);
 }
 
 void eraseMinute(int m) {
