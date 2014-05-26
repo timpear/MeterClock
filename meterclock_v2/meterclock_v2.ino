@@ -55,10 +55,6 @@ void loop() {
   setFace(faceMode);
   setClock();
   strip.show();
-  delay(5);
-  setFace(faceMode);
-  setClock();
-  strip.show();
   delay(100);
 }
 
@@ -90,17 +86,11 @@ void eraseSecond(int s) {
     sPrev = s - 1;
   }  
   strip.setPixelColor(sPrev, 0, 0, 0);
-  strip.show();
-  strip.setPixelColor(sPrev, 0, 0, 0); //redundancy to make sure it erases
-  strip.show();
 }
 
 void eraseMinute(int m) {
   if (m != mPrev) {
     strip.setPixelColor(mPrev, 0, 0, 0);
-    strip.show();
-    strip.setPixelColor(mPrev, 0, 0, 0);
-    strip.show();
     mPrev = m;
   } 
 }
@@ -132,11 +122,7 @@ void eraseHour(int h) {
         strip.setPixelColor(p, 0, 0, 0);
         strip.show();
         delay(17);
-      }
-      for (int p = 0; p < 60; p++) {
-        strip.setPixelColor(p, 0, 0, 0);
-        strip.show();
-      } //redundancy to make sure it clears
+      }   
     }
     strip.setPixelColor(hPrev, 0, 0, 0);
     lastTH = twelveHour;
